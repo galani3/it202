@@ -4,6 +4,7 @@
         <title>Lab2: Alanis, Giovanni</title>
     </head>
     <body>
-        <h1>Lab2: Alanis, Giovanni</h1> 
+        <h1>Lab2: Alanis, Giovanni</h1>
+        <p>Hello, World</p> 
     </body>
 </html>
