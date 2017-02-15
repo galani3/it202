@@ -72,7 +72,7 @@
 
 
 
-
+<!-- Script that is necessary to correctly display Google data representation --> 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -80,8 +80,8 @@
 
 
 <script type="text/javascript">
-  var communityareaCount = [];
-   var coordinates = [];
+  var communityareaCount = [];      // Create an array to hold the amount of potholes for each community area
+   var coordinates = [];            // Create an array to hold all the latitudes and longitudes 
 $(function(){
    var url = "https://data.cityofchicago.org/resource/787j-mys9.json";
             url += '?' + $.param({
@@ -91,38 +91,35 @@ $(function(){
 $.ajax({
   url: url,
   method: 'GET',
-  data:{"$limit" : 500000}
+  data:{"$limit" : 500000}      // Get at least 50000 items back
 })
             
 .done(function(result){
     $.each(result, function(index,value){
-        var key = value["community_area"];
-        if(!( key in communityareaCount))
+        var key = value["community_area"];          // The key or index of the array corresponds to the community area 
+        if(!( key in communityareaCount))       // If the community area has not been added, then add it to the array and start the count at 1
         {
-            communityareaCount[key] = 1;
+            communityareaCount[key] = 1;        
         }
-        else
+        else                                    // If its already in the array, then just increase the count of potholes 
         {
             communityareaCount[key] = communityareaCount[key] + 1;
         }
         
-        if(value["latitude"] == undefined || value["longitude"] == undefined)
+        if(value["latitude"] == undefined || value["longitude"] == undefined)   
         {
-            
+            //Some community areas had an undefined lattitude or longitude, so we filter those out 
         }
-        else
+        else        // If there is a lattitude and longitude value, then push those to the coordinates array 
         {
             coordinates.push(new google.maps.LatLng(value["latitude"],value["longitude"]));
-            console.log(value["latitude"]);
-            console.log(value["longitude"]);
         }
     });
     
-    console.log(coordinates);
     
    });
    
-      google.charts.load('current', {'packages':['table', 'corechart']});
+      google.charts.load('current', {'packages':['table', 'corechart']});   //Load the necessary packages 
       google.charts.setOnLoadCallback(drawTable);
 
 
@@ -130,7 +127,7 @@ $.ajax({
       function drawTable() {
         var data = new google.visualization.DataTable();
         
-        data.addColumn('string', 'Community Area');
+        data.addColumn('string', 'Community Area');             // Create 2 columns for the Community Area and # of potholes open 
         data.addColumn('number', '# of Potholes');
         for(var i = 0; i < 79; i++)
         {
@@ -141,7 +138,7 @@ $.ajax({
                 }
                 else{
                     data.addRows([
-                      [i.toString(),  communityareaCount[i]]
+                      [i.toString(),  communityareaCount[i]]        //i represents the community area so we add a row with the # of potholes
                     ]);
                 }
         }
@@ -152,10 +149,10 @@ $.ajax({
         };
 
         
-        var table = new google.visualization.Table(document.getElementById('table_div'));
+        var table = new google.visualization.Table(document.getElementById('table_div'));       // Create a data table from the data
         table.draw(data, {showRowNumber: false, width: '100%', height: '100%'});
-        var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-        chart.draw(data, options);
+        var chart = new google.visualization.PieChart(document.getElementById('piechart'));     // Create a pie chart from the data
+        chart.draw(data, options);  
       }
 
 });
@@ -166,7 +163,7 @@ $.ajax({
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
           zoom: 10,
-          center: {lat: 41.871689, lng: -87.702416},
+          center: {lat: 41.871689, lng: -87.702416},                    // Centered it at a point where most of the heatmap can be seen
           mapTypeId: 'satellite'
         });
 
@@ -209,7 +206,7 @@ $.ajax({
       }
 
       function getPoints() {
-        return coordinates;
+        return coordinates;         // Use the coordinate array as the data points to plot on the heatmap 
       }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0FkJHSd1bddqYIRzhdkd3Srp5zUrk0tI&libraries=visualization&callback=initMap"
