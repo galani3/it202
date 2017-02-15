@@ -6,6 +6,7 @@
     </head>
     <body>
     <canvas id ="canvas1" width = "500" height = "300" style = "background-color: #001E62"></canvas>
+    <canvas id ="canvas2" width = "500" height = "300" style = "background-color: gray"></canvas>
     
     
     
@@ -53,6 +54,66 @@
             }
           });
         });
+    </script>
+    <script>
+        var circleX = 250;
+        var circleY = 150;
+        var rightHit = false;
+        var leftHit = false; 
+        
+        function drawCircle()
+        {
+            $(function(){
+              $(document).keydown(function(a){
+                if(event.which == 40)
+                {
+                    circleY += 1;
+                }
+                
+                else if (event.which == 38)
+                {
+                    circleY -= 1;
+                }
+              });
+            });
+            
+                if(circleX == 450)
+                {
+                    rightHit = true;
+                    leftHit = false;
+                }
+                else if (circleX == 50)
+                {
+                    leftHit = true;
+                    rightHit = false;
+                }
+                
+                if(rightHit)
+                {
+                    circleX = circleX - 5;
+                }
+                else if(leftHit)
+                {
+                    circleX = circleX + 5;
+                }
+                else
+                {
+                    circleX = circleX + 5;
+                }
+                var c = document.getElementById("canvas2");
+                var ctx = c.getContext("2d");
+                ctx.clearRect(0,0, c.width, c.height);
+                ctx.beginPath();
+                ctx.arc(circleX,circleY,50,0,2*Math.PI);
+                console.log(circleX);
+                console.log(circleY);
+                ctx.fillStyle = "#D50032";
+                ctx.fill();
+                
+                requestAnimationFrame(drawCircle);
+        }
+        
+        requestAnimationFrame(drawCircle);
     </script> 
     </body>
 </html>
