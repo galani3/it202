@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <style>
+            html, body
+            {
+                height: 100%;
+                width : 100%;
+            }
+            
+            #background
+            {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+            }
+            
+            .centerDiv
+        	{
+        		width: 60%;
+        		height:200px;
+        		margin: 0 auto;
+        		background-color:#FFA500 ;
+        	}
+        </style>
+    </head>
+    <body>
+         <canvas id ="background" style = "background-color: black"></canvas>
+         
+        <!-- Load custom music for game -->
+         <audio id = "introMusic" autoplay="autoplay">
+         <source src="intro.wav" type="audio/mpeg">
+           Your browser does not support the audio element.
+         </audio>
+         
+         <audio id = "gameMusic">
+         <source src="gameMusic.wav" type="audio/mpeg">
+           Your browser does not support the audio element.
+         </audio>
+         
+         
+
+
+    <script>
+        
+        var background = document.getElementById("background");
+        var ctx = background.getContext("2d");
+        background.width = window.innerWidth;
+        background.height = window.innerHeight;
+        var muted = false;
+        var intro = true;
+        var gameOver = false;
+        var restart = false;
+        var crashed = false;
+        var introMusic = document.getElementById("introMusic");
+        var gameMusic = document.getElementById("gameMusic");
+        
+        var score = 0;
+        var numOfLives = 3;
+        var spaceShip = new Image();
+        var meteor = new Image();
+        var fuel = new Image();
+        var explosion =  new Image();
+        var up = new Image();
+        var down = new Image();
+        up.src = 'Up.png';
+        down.src = 'down.png';
+        explosion.src = 'explosion.png';
+        fuel.src = "Fuel.png";
+        spaceShip.src = '8bitSpaceShip.png';
+        meteor.src = 'Meteor.png';
+        
+        
+        
+//----------------------------------------------------
+// Properties for the title and Push start 
+        var changeColor = 0;
+        var firstColor = "yellow";
+        var secondColor = "yellow";
+        var thirdColor = "orange";
+        function title()
+        {
+           
+            var gradient=ctx.createLinearGradient(background.width,0,0,0);
+
+            if(changeColor == 1)
+            {
+               firstColor = "orange";
+               secondColor = "yellow";
+               thirdColor = "yellow";
+            }
+            else if(changeColor == 2)
+            {
+                firstColor = "yellow";
+                secondColor = "orange";
+                thirdColor = "yellow";
+            }
+            else if(changeColor == 3)
+            {
+                firstColor = "yellow";
+                secondColor = "yellow";
+                thirdColor = "orange";
+                changeColor = 0;
+            }
+                
+            ctx.fillStyle = "white";    
+            ctx.font = "20px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("Controls: ",(window.innerWidth/2) - 300,(window.innerHeight/2));
+            
+            ctx.drawImage(up, (window.innerWidth/2) - 250, (window.innerHeight/2) - 30, 40, 40);
+            ctx.drawImage(down, (window.innerWidth/2) - 200, (window.innerHeight/2) - 30, 40, 40);
+            
+            ctx.fillText("Avoid: ",(window.innerWidth/2) - 50,(window.innerHeight/2));
+            ctx.drawImage(meteor, (window.innerWidth/2) - 10, (window.innerHeight/2) - 30, 40, 40);
+            
+            ctx.fillText("Collect: ",(window.innerWidth/2) + 200,(window.innerHeight/2));
+            ctx.drawImage(fuel, (window.innerWidth/2) + 250, (window.innerHeight/2) - 30, 40, 40);
+            
+            gradient.addColorStop("0",firstColor);
+            gradient.addColorStop("0.5",secondColor);
+            gradient.addColorStop("1.0",thirdColor);
+            ctx.fillStyle=gradient;
+            ctx.font = "bold 100px sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText("Flight Quest",(window.innerWidth/2), 200);
+            
+            changeColor += 1;
+            if(intro)
+            {
+                setTimeout(title, 100);
+            }
+            
+        }
+        
+        
+        var timer = 0;
+        
+        function pushStart()
+        {
+            if(timer == 1)
+            {
+                 ctx.clearRect((window.innerWidth/2)-500, (window.innerHeight/2) + 50, window.innerWidth, window.innerHeight);
+                 timer -= 1;
+            }
+            
+            
+            else if(timer == 0)
+            {
+                ctx.textAlign = "center";
+                ctx.font = "bold 50px Courier New";
+                ctx.fillStyle = "white";
+                ctx.fillText("Click to Start", (window.innerWidth/2), ((window.innerHeight/2)+100));
+                timer = 1;
+            }
+            if(intro)
+            {
+                setTimeout(pushStart, 1000);
+            }
+        }
+        
+        var introShip = new Hero();
+        introShip.x = -100;
+        introShip.y = background.height - 200;
+        
+        function passBy()
+        {
+            ctx.clearRect(introShip.x, introShip.y, introShip.width, introShip.height);
+            introShip.x += 5;
+            ctx.beginPath();
+            ctx.drawImage(spaceShip, introShip.x, introShip.y, introShip.width, introShip.height);
+            
+            if(introShip.x > (background.width + 100))
+            {
+                introShip.x = -100;
+            }
+            if(intro)
+            {
+                requestAnimationFrame(passBy);     
+            }
+            
+        }
+//-----------------------------------------------------------
+// Properties and Physics for the Player, Projectiles, and score adder
+        function Hero()
+        {
+            this.x = 100;
+            this.y = window.innerHeight - 200;
+            this.height = 50;
+            this.width = 50;
+        }
+        
+        Hero.prototype.draw = function()
+        {
+        
+            ctx.clearRect(this.x, this.y, this.width, this.height);
+            ctx.beginPath();
+            ctx.drawImage(spaceShip, this.x, this.y, this.width, this.height);
+            
+            if(this.y <= 0)
+            {
+                this.y = 0;
+            }
+            
+            if(this.y >= window.innerHeight - this.height)
+            {
+                this.y = window.innerHeight - this.height;
+            }
+                
+        };
+        
+        
+        function Enemy()
+        {
+            this.x = Math.floor((Math.random() * window.innerWidth + 100) + window.innerWidth);
+            this.y =  Math.floor((Math.random() * (window.innerHeight - this.height)) + this.height);
+            this.height = 50;
+            this.width = 50;
+        }
+        
+        Enemy.prototype.draw = function() 
+        {
+            ctx.clearRect(this.x, this.y, this.width, this.height);
+            ctx.beginPath();
+            ctx.drawImage(meteor, this.x, this.y, this.width, this.height);
+            
+            this.x = this.x - 17;
+            if(this.x <= 0 - this.width)
+            {
+                this.x = Math.floor((Math.random() * window.innerWidth + 100) + window.innerWidth);
+                this.y = Math.floor((Math.random() * (window.innerHeight - this.height)) + this.height);
+            }
+            
+            if (hero.x < this.x + this.width && hero.x + hero.width > this.x && hero.y < this.y + this.height && hero.height + hero.y > this.y) {
+                crashed = true;
+            }
+
+        };
+        
+        function Benefit()
+        {
+            this.x = Math.floor((Math.random() * window.innerWidth + 500) + window.innerWidth);
+            this.y =  Math.floor((Math.random() * (window.innerHeight - this.height)) + this.height);
+            this.height = 50;
+            this.width = 50;
+        }
+        
+        Benefit.prototype.draw = function() 
+        {
+            ctx.clearRect(this.x, this.y, this.width, this.height);
+            ctx.beginPath();
+            ctx.drawImage(fuel, this.x, this.y, this.width, this.height);
+            
+            this.x = this.x - 10;
+            if(this.x <= 0 - this.width)
+            {
+                this.x = Math.floor((Math.random() * window.innerWidth + 500) + window.innerWidth);
+                this.y = Math.floor((Math.random() * (window.innerHeight - this.height)) + this.height);
+            }
+            
+            if (hero.x < this.x + this.width && hero.x + hero.width > this.x && hero.y < this.y + this.height && hero.height + hero.y > this.y) {
+                score += 10;
+                this.x = Math.floor((Math.random() * window.innerWidth + 500) + window.innerWidth);
+                this.y = Math.floor((Math.random() * (window.innerHeight - this.height)) + this.height);
+            }
+        };
+        
+        
+        
+        var projectiles = [];
+        for(var i = 0; i < 3; i++)
+        {
+            projectiles.push(new Enemy());
+        }
+        var hero = new Hero();
+        var benefit = new Benefit();
+
+        
+ //-------------------------------------------
+ // Handles the input 
+        
+        var keyState = [];
+        window.addEventListener('keydown',function(e)
+        {
+            keyState[e.keyCode || e.which] = true;
+        }); 
+        
+        window.addEventListener('keyup',function(e)
+        {
+            keyState[e.keyCode || e.which] = false;
+        }); 
+
+        function checkInput() 
+        {
+            if (keyState[38])
+            {
+                hero.y -= 6;
+            }    
+            if (keyState[40])
+            {
+                hero.y += 6;
+            }
+            
+        }
+        
+        
+//------------------------------------------------------------------
+// Display the score at the left hand corner 
+    var fps = 0;
+    function updateScore()
+    {
+        fps += 1;
+            
+        if(fps % 60 == 0)
+        {
+            score += 1;
+        }
+    
+        ctx.fillStyle= "white";
+        ctx.font = "50px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("Score: "+score, 120, 60);
+    }
+    
+    
+    
+    function displayLives()
+    {
+        
+        ctx.fillStyle= "white";
+        ctx.font = "30px sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("Lives: ", window.innerWidth - 390, 80);
+        
+        if(numOfLives == 3)
+        {
+            ctx.beginPath();
+            ctx.drawImage(spaceShip, window.innerWidth - 300, 50, 50, 50);
+            
+            ctx.beginPath();
+            ctx.drawImage(spaceShip, window.innerWidth - 200, 50, 50, 50);
+            
+            ctx.beginPath();
+            ctx.drawImage(spaceShip, window.innerWidth - 100, 50, 50, 50);
+        }
+        else if(numOfLives == 2)
+        {
+            ctx.clearRect(window.innerHeight -300, 50, 50, 50);
+            
+            ctx.beginPath();
+            ctx.drawImage(spaceShip, window.innerWidth - 200, 50, 50, 50);
+            
+            ctx.beginPath();
+            ctx.drawImage(spaceShip, window.innerWidth - 100, 50, 50, 50);
+        }
+        
+        else if(numOfLives == 1)
+        {
+            ctx.clearRect(window.innerWidth - 200, 50, 50 ,50);
+            ctx.clearRect(window.innerWidth - 100, 50, 50 ,50);
+            
+            ctx.beginPath();
+            ctx.drawImage(spaceShip, window.innerWidth - 100, 50, 50, 50);
+        }
+        
+        else if(numOfLives == 0)
+        {
+            gameOver = true;
+        }
+    }
+ //-----------------------------------------------------------------
+    // Display the game title and prompt user to click to start 
+    
+    title();
+    pushStart();
+    passBy();
+    
+    
+     window.addEventListener('mousedown',function()
+    {
+        gameMusic.autoplay = true;
+        gameMusic.load();
+        
+        introMusic.autoplay = false;
+        introMusic.load();
+        intro = false;
+        
+        ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
+        draw();
+        
+    }); 
+    
+ //-----------------------------------------------------------------
+    // Display Game over and ask if they want to play again 
+    var count = 0;
+    function end()
+        {
+            if(count == 1)
+            {
+                 ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
+                 count -= 1;
+            }
+            
+            
+            else if(count == 0)
+            {
+                ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
+                ctx.textAlign = "center";
+                ctx.font = "bold 50px Courier New";
+                ctx.fillStyle = "white";
+                ctx.fillText("Game Over", (window.innerWidth/2), (window.innerHeight/2));
+                count = 1;
+            }
+            
+            ctx.textAlign = "center";
+            ctx.font = "20px Courier New";
+            ctx.fillStyle = "white";
+            ctx.fillText("Press R to restart", (window.innerWidth/2), ((window.innerHeight/2)+100));
+            
+            ctx.textAlign = "center";
+            ctx.font = "20px Courier New";
+            ctx.fillStyle = "white";
+            ctx.fillText("Your score: "+score, (window.innerWidth/2), ((window.innerHeight/2)+50));
+            
+            if(!restart)
+            {
+                setTimeout(end, 1000);
+            }
+            else
+            {
+                score = 0;
+                restart = false;
+                numOfLives = 3;
+                gameOver = false;
+                count = 0;
+                
+                gameMusic.autoplay = true;
+                gameMusic.load();
+                draw();
+            }
+        }
+        
+          window.addEventListener('keydown',function(e)
+        {
+            if(e.keycode == 82 || e.which == 82)
+            {
+                restart = true;
+            }
+        });
+        
+        
+ //-----------------------------------------------------------------
+ //   Play animation to let user know they crashed
+ 
+        var flicker = 0;
+        var loop = 0;
+        function collision()
+        {
+            if(flicker == 0)
+            {
+                ctx.clearRect(0, 0, background.width, background.height);
+                ctx.drawImage(explosion, hero.x, hero.y, hero.width, hero.height);
+                flicker += 1;
+            }
+            else
+            {
+                ctx.clearRect(0, 0, background.width, background.height);
+                flicker = 0;
+                loop += 1;
+            }
+            
+            if(loop < 5)
+            {
+                setTimeout(collision, 500);
+            }
+            else
+            {
+                for(var i = 0; i < 3; i++)
+                {
+                    projectiles[i].x = -500;
+                }
+                flicker = 0;
+                loop = 0;
+                numOfLives -= 1;
+                crashed = false;
+                gameMusic.autoplay = true;
+                gameMusic.load();
+                draw();
+            }
+            
+            
+        }
+ 
+ 
+ 
+ 
+ //-----------------------------------------------------------------
+ //   Option to mute music
+        window.addEventListener('keydown',function(e)
+        {
+            var gameMusic =  document.getElementById("gameMusic");
+            if(e.keycode == 77 || e.which == 77)
+            {
+                if(!muted)
+                {
+                    muted = true;
+                    gameMusic.autoplay = false;
+                    gameMusic.load();
+                }
+                else if(muted)
+                {
+                    muted = false;
+                    gameMusic.autoplay = true;
+                    gameMusic.load();
+                }
+            }
+        });
+        
+    //---------------------------------------------------------------
+    // Draws the items to the canvas
+        function draw()
+        {
+            
+            ctx.clearRect(0,0, window.innerWidth, window.innerHeight);
+            ctx.font = "20px Courier New";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText("Push M to mute music", 130, 100);
+            
+            hero.draw();
+            benefit.draw();
+            for(var i = 0; i < 3; i++)
+            {
+                projectiles[i].draw();
+            }
+            
+            
+            displayLives();
+            checkInput();
+            updateScore();
+            
+            if(!gameOver && !crashed)
+            {
+                requestAnimationFrame(draw);
+            }
+            else if(crashed)
+            {
+                gameMusic.autoplay = false;
+                gameMusic.load();
+                collision();
+            }
+            else
+            {
+                gameMusic.autoplay = false;
+                gameMusic.load();
+                end();
+                
+            }
+        }
+        
+        
+        
+    </script>
+    </body>
+</html>

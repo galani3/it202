@@ -61,22 +61,22 @@
         var rightHit = false;
         var leftHit = false; 
         
-        function drawCircle()
-        {
             $(function(){
               $(document).keydown(function(a){
                 if(event.which == 40)
                 {
-                    circleY += 1;
+                    circleY += 5;
                 }
                 
                 else if (event.which == 38)
                 {
-                    circleY -= 1;
+                    circleY -= 5;
                 }
               });
             });
-            
+        
+        function drawCircle()
+        {
                 if(circleX == 450)
                 {
                     rightHit = true;
@@ -90,11 +90,11 @@
                 
                 if(rightHit)
                 {
-                    circleX = circleX - 5;
+                    circleX = (circleX - 5)*0.98;
                 }
                 else if(leftHit)
                 {
-                    circleX = circleX + 5;
+                    circleX = (circleX + 5)*0.98;
                 }
                 else
                 {
