@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> </title>
+        <!-- Include Dexie -->
+      <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+
+      <script>
+          //
+          // Define your database
+          //
+          var db = new Dexie("friend_database");
+          var db2 = new Dexie("class_database");
+          db.version(1).stores({
+              friends: 'name,shoeSize'
+          });
+          
+          db2.version(1).stores({
+              semester: 'subject,number'
+          });
+          
+          
+          db2.semester.put({subject: "ECE", number: 115}).then (function(){
+              //
+              // Then when data is stored, read from it
+              //
+              return db2.semester.get('ECE');
+          }).then(function (semester) {
+              //
+              // Display the result
+              //
+              console.log("ECE has number " + semester.number);
+          }).catch(function(error) {
+             //
+             // Finally don't forget to catch any error
+             // that could have happened anywhere in the
+             // code blocks above.
+             //
+             alert ("Ooops: " + error);
+          });
+          
+
+          //
+          // Put some data into it
+          //
+          db.friends.put({name: "Nicolas", shoeSize: 8}).then (function(){
+              //
+              // Then when data is stored, read from it
+              //
+              return db.friends.get('Nicolas');
+          }).then(function (friend) {
+              //
+              // Display the result
+              //
+              console.log("Nicolas has shoe size " + friend.shoeSize);
+          }).catch(function(error) {
+             //
+             // Finally don't forget to catch any error
+             // that could have happened anywhere in the
+             // code blocks above.
+             //
+             alert ("Ooops: " + error);
+          });
+      </script>
+    </head>
+    <body>
+
+    </body>
+</html>
