@@ -204,6 +204,49 @@
                 
         };
         
+        function Blaster()
+        {
+            this.x = hero.x + hero.width;
+            this.y = hero.y + (hero.height/2);
+            this.height = 5;
+            this.width = 10;
+        }
+        
+        Blaster.prototype.draw = function()
+        {
+            ctx.clearRect(this.x, this.y, this.width, this.height);
+            ctx.beginPath();
+            ctx.fillStyle = "red";
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+            this.x  = this.x + 15;
+            
+            if(this.x > window.innerWidth + 100)
+            {
+                this.x = hero.x + hero.width;
+                this.y = hero.y + (hero.height/2);
+            }
+            
+        };
+        
+         window.addEventListener('keydown',function(e)
+        {
+            var gameMusic =  document.getElementById("gameMusic");
+            if(e.keycode == 77 || e.which == 77)
+            {
+                if(!muted)
+                {
+                    muted = true;
+                    gameMusic.autoplay = false;
+                    gameMusic.load();
+                }
+                else if(muted)
+                {
+                    muted = false;
+                    gameMusic.autoplay = true;
+                    gameMusic.load();
+                }
+            }
+        });
         
         function Enemy()
         {
