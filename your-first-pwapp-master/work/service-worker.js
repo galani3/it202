@@ -1,24 +1,24 @@
+// JavaScript File
 var dataCacheName = 'weatherData-v1';
 var cacheName = 'weatherPWA-step-6-1';
 var filesToCache = [
-    'https://preview.c9users.io/_static/preview/livecss.js',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/index.html',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/scripts/app.js',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/styles/inline.css',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/clear.png',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/cloudy-scattered-showers.png',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/cloudy.png',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/fog.png',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/ic_add_white_24px.svg',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/ic_refresh_white_24px.svg',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/partly-cloudy.png',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/rain.png',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/scattered-showers.png',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/sleet.png',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/snow.png',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/thunderstorm.png',
-    'https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/images/wind.png'
+  './',
+  './index.html',
+  './scripts/app.js',
+  './styles/inline.css',
+  './images/clear.png',
+  './images/cloudy-scattered-showers.png',
+  './images/cloudy.png',
+  './images/fog.png',
+  './images/ic_add_white_24px.svg',
+  './images/ic_refresh_white_24px.svg',
+  './images/partly-cloudy.png',
+  './images/rain.png',
+  './images/scattered-showers.png',
+  './images/sleet.png',
+  './images/snow.png',
+  './images/thunderstorm.png',
+  './images/wind.png'
   ];
 
 self.addEventListener('install', function(e) {

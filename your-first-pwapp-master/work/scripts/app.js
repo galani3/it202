@@ -171,7 +171,7 @@
     var url = 'https://query.yahooapis.com/v1/public/yql?format=json&q=' +
         statement;
     // TODO add cache logic here
-        if ('caches' in window) {
+    if ('caches' in window) {
       /*
        * Check if the service worker has already cached this city's weather
        * data. If the service worker has the data, then display the cached
@@ -220,7 +220,7 @@
   };
 
   // TODO add saveSelectedCities function here
-  // Save list of cities to localStorage.
+   // Save list of cities to localStorage.
   app.saveSelectedCities = function() {
     var selectedCities = JSON.stringify(app.selectedCities);
     localStorage.selectedCities = selectedCities;
@@ -365,9 +365,9 @@
   }
 
   // TODO add service worker code here
-   if ('serviceWorker' in navigator) {
+    if ('serviceWorker' in navigator) {
     navigator.serviceWorker
-             .register('https://preview.c9users.io/galani3/it202spr17/your-first-pwapp-master/work/service-worker.js')
+             .register('./service-worker.js')
              .then(function() { console.log('Service Worker Registered'); });
   }
 })();
