@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> </title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Russo+One" rel="stylesheet">
+        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel='manifest' href='./manifest.json'>
+        
+        
+        <meta name='mobile-web-app-capable' content='yes'>
+        <meta name='apple-mobile-web-app-capable' content='yes'>
+        <meta name='application-name' content='LunchSpot'>
+        <meta name='apple-mobile-web-app-status-bar-style' content='black'>
+        <meta name='apple-mobile-web-app-title' content='LunchSpot'>
+        <link rel=icon sizes=192x192 href=./food-icon192.png>
+        <link rel=apple-touch-icon href=./food-icon192.png>
+        
+                  <!-- Uses a transparent header that draws on top of the layout's background -->
+        <style>
+        .demo-layout-transparent {
+          background: url('./food-salad-restaurant-person.jpg') center / cover;
+        }
+        .demo-layout-transparent .mdl-layout__header,
+        .demo-layout-transparent .mdl-layout__drawer-button {
+          /* This background is dark, so we set text to white. Use 87% black instead if
+             your background is light. */
+          color: white;
+        }
+        
+        
+        .demo-card-wide.mdl-card {
+          width: 100%;
+        }
+        .demo-card-wide > .mdl-card__title {
+          color: #fff;
+          height: 176px;
+          background: url('./fast-food.jpg') center / cover;
+        }
+        .demo-card-wide > .mdl-card__menu {
+          color: #fff;
+        }
+        
+        #map {
+          height: 100%;
+          margin: 25px;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+          height: 100%;
+          margin: 0;
+          padding: 0;
+        }
+        </style>
+    </head>
+    <body>
+<div class="demo-layout-transparent mdl-layout mdl-js-layout">
+  <header class="mdl-layout__header mdl-layout__header--transparent">
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <a href = "https://preview.c9users.io/galani3/it202spr17/projects/5/project5.html" style = "color: white; text-decoration:none"><span class="mdl-layout-title"><strong>LunchSpot</strong> </span></a>
+      <!-- Add spacer, to align navigation to the right -->
+      <div class="mdl-layout-spacer"></div>
+      <!-- Navigation -->
+      <nav class="mdl-navigation">
+        <button type = "button" id = "re-do" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect" style = "color: white">
+          <strong>Find Your Next Lunch!</strong>
+        </button>
+      </nav>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title"></span>
+    <nav class="mdl-navigation ">
+       <a class="mdl-navigation__link" href="https://preview.c9users.io/galani3/it202spr17/projects/5/project5.html">Find a LunchSpot!</a>
+      <a id = "about" class="mdl-navigation__link" href="#">About</a>
+    </nav>
+  </div>
+  <div id = "map"></div>
+  <main class="mdl-layout__content">
+      <div id = "main-content" class = "row">
+          <div class  = "col-md-12">
+              <!-- Card goes here -->
+              <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+                  <div class="mdl-card__title">
+                  </div>
+                  <div class="mdl-card__supporting-text text-center">
+                   <h1 class = "welcome-text" style = "color: black; font-family: 'Russo One', sans-serif;"> Don't waste time looking for the next place to eat. Let this app choose!</h1>
+                   <h1 class = "user-input" style = "color: black; font-family: 'Russo One', sans-serif;"> What are you in the mood for?</h1>
+                   <h2 class = "about" style = "color: black; font-family: 'Russo One', sans-serif;">A little about the Developer</h2>
+                   <img height = "200px" style = "border: 2px solid; border-radius: 100px" class = "about" src = "./Headshot.jpg">
+                   <br>
+                   <p class = "about text-center" style = "color: black; font-family: 'Russo One', sans-serif;">Giovanni Alanis</p>
+                   <p class = "about" style = "color: black; font-family: 'Russo One', sans-serif;"> First generation Honors student at the University of Illinois at Chicago, pursuing a Bachelor’s degree in Computer Engineering. My interest in Computer Engineering resulted from my desire to design and build things, along with my passion for computers. I hope to become a software engineer that develops and optimizes new technology, such as virtual reality. I have experience using C++, Python, Assembly and I intend to learn other programming languages while at UIC.</p>
+                   <br>
+    
+                     <div class = "row user-input">
+                       
+                       <div class = "col-md-4">
+                         <p style = "color: black; font-family: 'Russo One', sans-serif;">What Category of Food?</p>
+                          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                            <input class="mdl-textfield__input" type="text" id="category">
+                            <label class="mdl-textfield__label" for="sample3">Category...</label>
+                          </div>
+                        </div>
+                        
+                        <div class = "col-md-4">
+                         <p style = "color: black; font-family: 'Russo One', sans-serif;">Distance from Me (City Block):</p>
+                        <select id ="distance">
+                          <option value="1" selected>1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                        </select>
+                      </div>
+                      
+                      <div class = "col-md-4">
+                         <p style = "color: black; font-family: 'Russo One', sans-serif;">Price:</p>
+                        <select id ="price">
+                          <option value="2" selected>$</option>
+                          <option value="3">$$</option>
+                          <option value="4">$$$</option>
+                        </select>
+                      </div>
+                      
+                    </div> 
+                    <br>
+                     <button type = "button " class = "user-input btn btn-primary" id = "search" >Submit</button>
+                  </div>
+                  <div class="mdl-card__actions mdl-card--border text-center">
+                    <button type = "button" id = "get-started" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect welcome-text" style = "color: black">
+                      <strong>Find A Place For Me!</strong>
+                    </button>
+                  </div>
+                  
+                </div>
+          </div>
+        </div>
+  </main>
+</div>
+    
+    
+    
+    <script>
+        $(".user-input").hide();
+        $("#map").hide();
+        $(".about").hide();
+    
+        $("#get-started").click(function(){
+            $(".welcome-text").hide();
+            $(".user-input").show();
+        });
+        
+        $("#search").click(function(){
+          $(".welcome-text").hide();
+          $(".user-input").hide();
+          searchPlaces();
+        });
+        
+        $("#re-do").click(function(){
+          window.location = "https://preview.c9users.io/galani3/it202spr17/projects/5/project5.html";
+        });
+        
+        $("#about").click(function(){
+           $(".welcome-text").hide();
+          $(".user-input").hide();
+          $(".about").show();
+        });
+        
+        function searchPlaces()
+        {
+          if (navigator.geolocation) 
+          {
+            navigator.geolocation.getCurrentPosition(showPosition);
+          } 
+          else 
+          { 
+            $(".mdl-card__supporting-text").html('<p>Error: Could not locate current location</p>');
+            
+          }
+        }
+        
+        function showPosition(position)
+        {
+          var distance = document.getElementById("distance");
+          var blocks = distance.options[distance.selectedIndex].value;
+          var category = document.getElementById("category").value;
+          var priceSelected = document.getElementById("price");
+          var price = priceSelected.options[priceSelected.selectedIndex].value;
+          
+          
+          var map;
+          var service;
+          
+            var user = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+          
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: user,
+                zoom: 13
+              });
+              
+            var control = document.createElement('div'); 
+            control.innerHTML = "Find New Location";
+            control.style.color = 'rgb(25,25,25)';
+            control.style.fontFamily = 'Russo One,sans-serif';
+            control.style.fontSize = '16px';
+            control.style.lineHeight = '38px';
+            control.style.paddingLeft = '5px';
+            control.style.paddingRight = '5px';
+            google.maps.event.addDomListener(control, 'click', function() {
+              window.location = "https://preview.c9users.io/galani3/it202spr17/projects/5/project5.html";
+            });
+            control.index = 1;   
+            map.controls[google.maps.ControlPosition.TOP_RIGHT].push(control);
+          
+            var request = {
+              location: user,
+              radius: blocks * 10.4672,
+              query: category + ' food',
+              minPriceLevel: 0,
+              maxPriceLevel: price
+            };
+            
+          
+            var userMarker = new google.maps.Marker({
+                position: {lat: position.coords.latitude, lng: position.coords.longitude},
+                map: map,
+                title: 'Current Position'
+              });
+              
+              var userContent = '<p><strong>Current Position</strong></p>';
+              var userInfoWindow = new google.maps.InfoWindow({
+                content: userContent
+              });
+              
+              userMarker.addListener('click', function() {
+                userInfoWindow.open(map, userMarker);
+              });
+                  
+            
+            
+            $(".demo-card-wide").hide();
+            $("#map").show();
+            service = new google.maps.places.PlacesService(map);
+            service.textSearch(request, callback);
+            console.log(category);
+            console.log(price);
+            console.log(blocks * 20.4672);
+            console.log(request);
+            
+             function callback(results, status) {
+             if (status == google.maps.places.PlacesServiceStatus.OK) {
+               var randomLocation = Math.floor(Math.random() * (results.length - 1));
+              createMarker(results[randomLocation]);
+            }
+          }
+            
+            function createMarker(place) {
+              var locationMarker = new google.maps.Marker({
+                map: map,
+                position: place.geometry.location,
+                title: "Location Chose"
+              });
+              console.log(place);
+              var locationContent = '<p><strong>' + place["name"] + '</strong></p><p>' + place["formatted_address"] + '</p>';
+              var locationInfoWindow = new google.maps.InfoWindow({
+                content: locationContent
+              });
+              
+              locationMarker.addListener('click', function() {
+                locationInfoWindow.open(map, locationMarker);
+              });
+            }
+            
+        }
+        
+    </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        console.log("Will the service worker register?");
+        navigator.serviceWorker.register('service-worker.js')
+          .then(function(reg){
+            console.log("Yes, it did.");
+          }).catch(function(err) {
+            console.log("No it didn't. This happened: ", err);
+          });
+      }
+    </script>
+     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB0FkJHSd1bddqYIRzhdkd3Srp5zUrk0tI&libraries=places"
+    async defer></script>
+    </body>
+</html>
