@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> </title>
+        <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <!-- Material Design icon font -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    </head>
+    <body>
+        
+        <!-- Simple header with fixed tabs. -->
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-header
+            mdl-layout--fixed-tabs">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <!-- Title -->
+      <span class="mdl-layout-title">Shopping List</span>
+    </div>
+    <!-- Tabs -->
+    <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+      <a href="#display" id = "search" class="mdl-layout__tab is-active">Search</a>
+      <a href="#add" class="mdl-layout__tab">Add</a>
+      <a href="#edit" class="mdl-layout__tab">About</a>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title">Title</span>
+  </div>
+  <main class="mdl-layout__content">
+    <section class="mdl-layout__tab-panel is-active" id="display">
+      <div class="page-content">
+          <h2>Shopping List</h2>
+          <div id = "list">
+
+          </div>
+      </div>
+      
+    </section>
+    <section class="mdl-layout__tab-panel" id="add">
+      <div class="page-content">
+          <!-- Your content goes here -->
+          <form action="#">
+          <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" id="sample1">
+            <label class="mdl-textfield__label" for="sample1">Name</label>
+          </div>
+          <br>
+          <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" id="sample2">
+            <label class="mdl-textfield__label" for="sample2">Store</label>
+          </div>
+          <br>
+          <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" id="sample3">
+            <label class="mdl-textfield__label" for="sample3">Category</label>
+          </div>
+          <br>
+          <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" id="sample4">
+            <label class="mdl-textfield__label" for="sample4">Price</label>
+          </div>
+          <br>
+          <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" id="sample5">
+            <label class="mdl-textfield__label" for="sample5">Quantity</label>
+          </div>
+          <br>
+          <button id = "addToList" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+            Submit
+          </button>
+        </form>
+      </div>
+    </section>
+    <section class="mdl-layout__tab-panel" id="edit">
+      <div class="page-content"><!-- Your content goes here --></div>
+    </section>
+  </main>
+</div>
+
+
+
+ <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+ <script>
+          //
+          // Define your database
+          //
+          var db = new Dexie("shopDB");
+          db.version(1).stores({
+              shop_List: '++id,name,store,category,price,quantity'
+          });
+          
+          // Get current shopping list
+          db.shop_List
+            .each(function(item){
+                $('#list').html(item.name + '<br>' + item.store + '<br>' + item.category + '<br>' + item.price + '<br>'+ item.quantity + '<br>');
+                console.log(item.name);
+            });
+            
+            
+          $('#search').click(function()
+          {
+            db.shop_List
+            .each(function(item){
+                $('#list').html(item.name + '<br>' + item.store + '<br>' + item.category + '<br>' + item.price + '<br>'+ item.quantity + '<br>');
+                console.log(item.name);
+            });
+          });
+            $('#addToList').click(function()
+            {
+              var name = document.getElementById('sample1').value;
+              var store = document.getElementById('sample2').value;
+              var category = document.getElementById('sample3').value;
+              var price = document.getElementById('sample4').value;
+              var quantity = document.getElementById('sample5').value;
+              
+              db.shop_List.add(
+                {
+                    store: store,
+                    category: category,
+                    name: name,
+                    quantity: quantity,
+                    price: price
+                
+                });
+            });
+          
+        //   db.shop_List.add(
+        //       {
+        //           store: "Target",
+        //           category: "Food",
+        //           name: "Chocolate",
+        //           quantity: "30",
+        //           price: "1.00"
+        //       });
+  </script>
+    </body>
+</html>
